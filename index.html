@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RECP — Your recipes</title>
+<meta name="description" content="RECP is a beautiful recipe manager for iPhone and Mac. Your recipes live in your own private iCloud. No data collection, no trackers, no ads." />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="RECP — Your recipes" />
+<meta property="og:description" content="A beautiful recipe manager for iPhone and Mac. Your data stays in your private iCloud. No data collection, ever." />
+<meta property="og:image" content="ICO-iOS-Default-1024x1024@1x.png" />
+
+<link rel="icon" type="image/png" href="ICO-iOS-Default-1024x1024@1x.png" />
+<link rel="apple-touch-icon" href="ICO-iOS-Default-1024x1024@1x.png" />
+
+<style>
+  :root{
+    --green:#79b449;
+    --green-dark:#5d9633;
+    --ink:#16181d;
+    --muted:#5b6470;
+    --bg:#ffffff;
+    --bg-soft:#f5f7f3;
+    --bg-soft-2:#eef2ea;
+    --border:#e5e8e2;
+    --shadow:0 18px 48px -18px rgba(20,30,12,.28);
+    --radius:18px;
+    --maxw:1080px;
+    --rounded:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,system-ui,sans-serif;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--green-dark);text-decoration:none}
+  a:hover{text-decoration:underline}
+  h1,h2,h3{font-family:var(--rounded);line-height:1.15;letter-spacing:-.02em;margin:0 0 .4em}
+  h1{font-size:clamp(2.1rem,5vw,3.4rem);font-weight:800}
+  h2{font-size:clamp(1.6rem,3.2vw,2.2rem);font-weight:800}
+  h3{font-size:1.15rem;font-weight:700}
+  p{margin:0 0 1em}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .muted{color:var(--muted)}
+
+  /* ---------- Header ---------- */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.82);
+    backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .nav .logo img{height:34px;display:block}
+  .nav nav{display:flex;gap:26px;align-items:center}
+  .nav nav a{color:var(--ink);font-weight:600;font-size:.95rem}
+  .nav nav a:hover{color:var(--green-dark);text-decoration:none}
+  .nav .menu-links{display:flex;gap:26px;align-items:center}
+  @media(max-width:720px){.nav .menu-links{display:none}}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(1200px 480px at 70% -10%, rgba(121,180,73,.16), transparent 60%),
+      linear-gradient(180deg,var(--bg-soft) 0%, var(--bg) 100%);
+    padding:72px 0 40px;
+  }
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+  @media(max-width:880px){.hero .wrap{grid-template-columns:1fr;text-align:center}}
+  .badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  @media(max-width:880px){.badge-row{justify-content:center}}
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;
+    background:var(--bg);border:1px solid var(--border);
+    padding:6px 13px;border-radius:999px;font-size:.82rem;font-weight:600;color:var(--muted)
+  }
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .hero h1 .accent{color:var(--green-dark)}
+  .hero p.lead{font-size:1.18rem;color:var(--muted);max-width:36ch}
+  @media(max-width:880px){.hero p.lead{margin-left:auto;margin-right:auto}}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+  @media(max-width:880px){.cta{justify-content:center}}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 22px;border-radius:12px;font-weight:700;font-size:.98rem;
+    border:1px solid transparent;cursor:pointer;
+  }
+  .btn-primary{background:var(--green);color:#fff}
+  .btn-primary:hover{background:var(--green-dark);text-decoration:none}
+  .btn-ghost{background:var(--bg);border-color:var(--border);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--green);text-decoration:none}
+
+  .device-window{
+    border-radius:14px;overflow:hidden;box-shadow:var(--shadow);
+    border:1px solid var(--border);background:#1c1c1e;
+  }
+  .device-window img{width:100%;display:block}
+
+  /* ---------- Trust banner ---------- */
+  .trust{padding:54px 0}
+  .trust .card{
+    background:linear-gradient(135deg,var(--green) 0%, var(--green-dark) 100%);
+    color:#fff;border-radius:24px;padding:46px 40px;text-align:center;box-shadow:var(--shadow);
+  }
+  .trust h2{color:#fff}
+  .trust p{color:rgba(255,255,255,.92);max-width:60ch;margin:0 auto}
+  .trust .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+  .trust .chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+    color:#fff;padding:8px 15px;border-radius:999px;font-size:.85rem;font-weight:600}
+
+  /* ---------- Sections ---------- */
+  section{padding:56px 0}
+  .section-head{text-align:center;max-width:60ch;margin:0 auto 40px}
+  .section-head p{color:var(--muted)}
+
+  /* ---------- Features ---------- */
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:880px){.features{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.features{grid-template-columns:1fr}}
+  .feature{
+    background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
+    padding:24px;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .feature:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .feature .ic{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:var(--bg-soft-2);font-size:22px;margin-bottom:14px;
+  }
+  .feature h3{margin-bottom:6px}
+  .feature p{margin:0;color:var(--muted);font-size:.96rem}
+
+  /* ---------- Screens ---------- */
+  .screens{background:var(--bg-soft);}
+  .phones{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:840px;margin:0 auto}
+  @media(max-width:680px){.phones{grid-template-columns:1fr;max-width:300px}}
+  .phone{
+    border-radius:30px;overflow:hidden;border:1px solid var(--border);
+    box-shadow:var(--shadow);background:#000;
+  }
+  .phone img{width:100%;display:block}
+  .phone-cap{text-align:center;margin-top:12px;font-size:.9rem;color:var(--muted);font-weight:600}
+
+  /* ---------- Legal ---------- */
+  .legal{background:var(--bg)}
+  .legal-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+  @media(max-width:860px){.legal-grid{grid-template-columns:1fr}}
+  .doc{
+    background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius);
+    padding:30px 28px;
+  }
+  .doc h2{font-size:1.5rem}
+  .doc h3{margin-top:22px;font-size:1.02rem;color:var(--ink)}
+  .doc p,.doc li{font-size:.93rem;color:#33383f}
+  .doc ul{padding-left:18px;margin:0 0 1em}
+  .doc li{margin-bottom:.35em}
+  .doc .updated{font-size:.8rem;color:var(--muted);margin-bottom:18px}
+
+  /* ---------- Footer ---------- */
+  footer.site{border-top:1px solid var(--border);padding:36px 0;background:var(--bg-soft)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+  .foot img{height:26px}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap}
+  .foot .links a{color:var(--muted);font-weight:600;font-size:.9rem}
+  .foot small{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="RECP home"><img src="logotype.png" alt="RECP — Your recipes" /></a>
+    <div class="menu-links">
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#terms">Terms</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <div class="badge-row">
+          <span class="pill"><span class="dot"></span> iPhone &amp; Mac</span>
+          <span class="pill"><span class="dot"></span> Syncs with iCloud</span>
+          <span class="pill"><span class="dot"></span> No data collection</span>
+        </div>
+        <h1>Your recipes,<br><span class="accent">beautifully organized.</span></h1>
+        <p class="lead">RECP keeps your recipes in your own private iCloud — organized into libraries, tagged, searchable, and ready on every device. Cook, share, and discover, without anyone watching.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#features">Explore features</a>
+          <a class="btn btn-ghost" href="#privacy">Read the privacy promise</a>
+        </div>
+      </div>
+      <div>
+        <div class="device-window">
+          <img src="scr/dskt/Screenshot%202026-06-10%20at%2007.37.54.png" alt="RECP on Mac showing a recipe library and a recipe detail view" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="trust">
+    <div class="wrap">
+      <div class="card">
+        <h2>No data collection. Ever.</h2>
+        <p>RECP has no analytics, no trackers, no ads, and no servers run by us. Your recipes live in <strong>your</strong> private iCloud account, synced by Apple between your own devices. We can’t see them — and we never will.</p>
+        <div class="row">
+          <span class="chip">🔒 Private by design</span>
+          <span class="chip">☁️ Your iCloud, not ours</span>
+          <span class="chip">🚫 No third-party tracking</span>
+          <span class="chip">🆓 No account to create</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Everything a recipe deserves</h2>
+        <p>Built for people who actually cook. Fast to capture, lovely to browse, effortless to share.</p>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <div class="ic">📚</div>
+          <h3>Libraries &amp; tags</h3>
+          <p>Group recipes into libraries, then filter by category, tags, or a quick search across titles, ingredients and notes.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">✨</div>
+          <h3>Paste with AI</h3>
+          <p>Paste any recipe text and let your own AI endpoint turn it into a clean, structured recipe — title, ingredients, steps and a generated photo.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">👥</div>
+          <h3>Share a library</h3>
+          <p>Invite family or friends with a link. Everyone with access can add and edit, and changes sync through iCloud.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">🌍</div>
+          <h3>Public catalogue</h3>
+          <p>Optionally publish a recipe for others to discover, and copy great ideas from the community straight into your own library.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">📝</div>
+          <h3>Add to Reminders</h3>
+          <p>Send a recipe’s ingredients to any Apple Reminders list to build your shopping list in a single tap.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">🌐</div>
+          <h3>Languages &amp; origins</h3>
+          <p>Tag a recipe’s origin, set its language, and have new AI-generated recipes written in the language you prefer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREENS -->
+  <section class="screens" id="screens">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Made to feel at home on iPhone</h2>
+        <p>The same recipes, the same library, in your pocket and on your desk.</p>
+      </div>
+      <div class="phones">
+        <figure class="phone-fig" style="margin:0">
+          <div class="phone"><img src="scr/mob/IMG_1451.PNG" alt="RECP recipe grid on iPhone" loading="lazy" /></div>
+          <figcaption class="phone-cap">Browse your library</figcaption>
+        </figure>
+        <figure class="phone-fig" style="margin:0">
+          <div class="phone"><img src="scr/mob/IMG_1452.PNG" alt="A recipe detail view on iPhone" loading="lazy" /></div>
+          <figcaption class="phone-cap">Cook from clear steps</figcaption>
+        </figure>
+        <figure class="phone-fig" style="margin:0">
+          <div class="phone"><img src="scr/mob/IMG_1453.PNG" alt="Sharing a recipe library on iPhone" loading="lazy" /></div>
+          <figcaption class="phone-cap">Share with the people you cook with</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGAL -->
+  <section class="legal">
+    <div class="wrap">
+      <div class="legal-grid">
+
+        <!-- PRIVACY -->
+        <article class="doc" id="privacy">
+          <h2>Privacy Policy</h2>
+          <p class="updated">Last updated: 10 June 2026</p>
+
+          <p><strong>The short version:</strong> RECP does not collect, sell, rent, or share your personal data. There are no analytics, no advertising, no third-party trackers, and no servers operated by us.</p>
+
+          <h3>Where your data lives</h3>
+          <p>Your recipes, libraries, tags and images are stored on your device and in your own <strong>private iCloud</strong> account using Apple CloudKit. Apple syncs this data between devices signed in to your Apple Account. The developer has no access to your private library.</p>
+
+          <h3>Sharing a library</h3>
+          <p>When you choose to share a library, its contents are made available through Apple iCloud to the people you invite. They can view and edit the shared library. You can stop sharing, or leave a shared library, at any time from within the app.</p>
+
+          <h3>Public Catalogue (opt-in)</h3>
+          <p>If you tap <em>Publish</em>, the recipe you publish — its title, description, ingredients, instructions, photo, and the author name or pseudonym you provide — is copied to a public iCloud database and becomes visible to other RECP users. Only recipes you explicitly publish are public; please don’t publish anything you wish to keep private. You can remove a published recipe with <em>Unpublish</em>, though cached copies on other devices may persist until they refresh.</p>
+
+          <h3>AI features (optional)</h3>
+          <p>RECP has no built-in AI service. If you enter your own OpenAI-compatible API URL and key in Settings, the recipe text you choose to parse (and prompts used to generate images) are sent to that endpoint you specify. That processing is governed by the terms and privacy policy of the provider you chose; RECP does not operate it and does not receive a copy of your data. Leave these settings blank to keep the feature off.</p>
+
+          <h3>Reminders (optional)</h3>
+          <p>With your permission, RECP can add a recipe’s ingredients to Apple Reminders on your device using Apple’s EventKit. This happens locally; no data is sent to us through this feature. You can revoke access in your system Privacy settings.</p>
+
+          <h3>Permissions we use</h3>
+          <ul>
+            <li><strong>iCloud</strong> — to store and sync your recipes and to enable sharing.</li>
+            <li><strong>Network</strong> — to reach iCloud, the public catalogue, and any AI endpoint you configure.</li>
+            <li><strong>Reminders</strong> — optional, only when you add ingredients to a list.</li>
+          </ul>
+
+          <h3>Data retention &amp; deletion</h3>
+          <p>You are in control. Delete recipes and libraries in the app, and those deletions sync through iCloud. Remove catalogue entries with <em>Unpublish</em>. To erase everything, delete the app and remove its data from your iCloud settings.</p>
+
+          <h3>Children</h3>
+          <p>RECP is not directed at children and does not knowingly collect any personal information from anyone.</p>
+
+          <h3>Changes</h3>
+          <p>If this policy changes, the updated version will be posted on this page with a new date.</p>
+
+          <h3>Contact</h3>
+          <p>Questions about privacy? Email <a href="mailto:courtly.radii-6h@icloud.com">courtly.radii-6h@icloud.com</a>.</p>
+        </article>
+
+        <!-- TERMS -->
+        <article class="doc" id="terms">
+          <h2>Terms of Use</h2>
+          <p class="updated">Last updated: 10 June 2026</p>
+
+          <p>By downloading or using RECP (“the app”), you agree to these Terms of Use. If you do not agree, please don’t use the app.</p>
+
+          <h3>License</h3>
+          <p>You are granted a personal, non-exclusive, non-transferable license to use RECP on devices you own or control, for your own personal, non-commercial use.</p>
+
+          <h3>Your content</h3>
+          <p>You keep ownership of the recipes and content you create. You are solely responsible for your content and for anything you choose to publish or share. By publishing a recipe to the Public Catalogue, you grant other RECP users the ability to view it and copy it into their own libraries.</p>
+
+          <h3>Acceptable use</h3>
+          <p>When sharing or publishing, you agree not to upload content that is unlawful, infringing, deceptive, offensive, or otherwise harmful. The app provides a way to report published recipes, and inappropriate content may be removed.</p>
+
+          <h3>Third-party services</h3>
+          <p>RECP relies on Apple iCloud, and — only if you configure it — an AI provider of your choosing. Your use of those services is governed by their own terms and privacy policies. We are not responsible for third-party services.</p>
+
+          <h3>No warranty</h3>
+          <p>The app is provided “as is” and “as available,” without warranties of any kind. While RECP syncs your data through iCloud, we do not guarantee that data will never be lost; you are responsible for keeping your own backups (for example, by exporting a library).</p>
+
+          <h3>Limitation of liability</h3>
+          <p>To the maximum extent permitted by law, the developer shall not be liable for any indirect, incidental, or consequential damages, or for any loss of data, arising from your use of the app.</p>
+
+          <h3>Termination</h3>
+          <p>You may stop using the app at any time by deleting it. These terms continue to apply to your prior use.</p>
+
+          <h3>Governing law</h3>
+          <p>These terms are governed by the laws of Poland, without regard to conflict-of-law rules.</p>
+
+          <h3>Changes</h3>
+          <p>We may update these terms; the latest version will always be posted on this page.</p>
+
+          <h3>Contact</h3>
+          <p>Questions about these terms? Email <a href="mailto:courtly.radii-6h@icloud.com">courtly.radii-6h@icloud.com</a>.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site" id="contact">
+  <div class="wrap foot">
+    <img src="logotype.png" alt="RECP" />
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms of Use</a>
+      <a href="mailto:courtly.radii-6h@icloud.com">Contact</a>
+    </div>
+    <small>© 2026 RECP. All rights reserved.</small>
+  </div>
+</footer>
+
+</body>
+</html>
