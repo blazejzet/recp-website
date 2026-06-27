@@ -54,8 +54,12 @@
   ul.ingredients li:last-child{border-bottom:0}
   ul.ingredients li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);margin-top:.6em;flex:0 0 auto}
 
-  ol.steps{padding-left:1.2em;margin:0}
-  ol.steps li{margin:0 0 .8em;padding-left:.2em}
+  .steps{display:flex;flex-direction:column;gap:14px}
+  .step{display:flex;gap:12px;align-items:flex-start}
+  .step .num{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:.12em}
+  .step .txt{flex:1;min-width:0}
+  .steps em{font-style:italic}
+  .steps strong{font-weight:700}
 
   .source{margin-top:1.4em;font-size:.9rem}
   .footer{max-width:var(--maxw);margin:24px auto;padding:0 22px;text-align:center}
@@ -103,7 +107,7 @@
       <ul class="ingredients" id="r-ingredients"></ul>
 
       <h2 id="r-steps-title" hidden>Instructions</h2>
-      <ol class="steps" id="r-steps"></ol>
+      <div class="steps" id="r-steps"></div>
 
       <div class="source" id="r-source" hidden></div>
     </div>
@@ -154,6 +158,48 @@
   }
   function field(fields, key) {
     return fields && fields[key] ? fields[key].value : undefined;
+  }
+
+  // --- Instructions parsing, ported from the app's InstructionsView ---------
+  function escapeHTML(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  // Inline-only markdown: bold (**x** / __x__) and italic (*x* / _x_). Text is
+  // HTML-escaped first, so injecting the tags afterwards is safe.
+  function inlineMarkdown(s) {
+    let h = escapeHTML(s);
+    h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    h = h.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+    h = h.replace(/(^|[^*])\*(?!\s)([^*]+?)\*/g, '$1<em>$2</em>');
+    h = h.replace(/(^|[^_\w])_(?!\s)([^_]+?)_/g, '$1<em>$2</em>');
+    return h;
+  }
+  // Strip a single leading ordered ("12.", "3)") or bullet ("-", "•", "*") marker.
+  function stripMarker(str) {
+    const s = String(str).trim();
+    for (const b of ['- ', '• ', '* ']) {
+      if (s.startsWith(b)) return s.slice(b.length).trim();
+    }
+    const m = s.match(/^\d+[.)]\s*/);
+    return m ? s.slice(m[0].length).trim() : s;
+  }
+  // Split a single-paragraph "1. … 2. …" string on its inline ordered markers.
+  function inlineSteps(text) {
+    const t = text.trim();
+    const single = [stripMarker(t)].filter(Boolean);
+    // Insert a sentinel right before each " N." / " N)" marker that follows
+    // whitespace, then split on it so each step's text stays intact.
+    const SEP = String.fromCharCode(0);
+    const marked = t.replace(/(\s)(\d+[.)]\s)/g, '$1' + SEP + '$2');
+    const parts = marked.split(SEP).map(p => stripMarker(p.trim())).filter(Boolean);
+    return parts.length > 1 ? parts : single;
+  }
+  // Split instructions into trimmed, marker-stripped steps; fall back to inline
+  // splitting when the source is a single paragraph (legacy data).
+  function stepsFrom(rawText) {
+    const text = normalizeNewlines(rawText);
+    const lines = text.split(/\n+/).map(l => stripMarker(l)).filter(Boolean);
+    return lines.length > 1 ? lines : inlineSteps(text);
   }
 
   // === Render =============================================================
@@ -212,17 +258,32 @@
       });
     }
 
-    // Instructions → numbered steps split on blank/new lines
-    const steps = normalizeNewlines(field(fields, 'instructions'))
-      .split(/\n+/).map(s => s.trim()).filter(Boolean);
+    // Instructions → numbered steps with badges + inline bold/italic, matching
+    // the app's InstructionsView (markers stripped, single-paragraph handled).
+    const steps = stepsFrom(field(fields, 'instructions') || '');
     if (steps.length) {
       $('r-steps-title').hidden = false;
-      const ol = $('r-steps');
-      steps.forEach(s => {
-        const li = document.createElement('li');
-        li.textContent = s;
-        ol.appendChild(li);
-      });
+      const wrap = $('r-steps');
+      if (steps.length > 1) {
+        steps.forEach((s, i) => {
+          const row = document.createElement('div');
+          row.className = 'step';
+          const num = document.createElement('div');
+          num.className = 'num';
+          num.textContent = String(i + 1);
+          const txt = document.createElement('div');
+          txt.className = 'txt';
+          txt.innerHTML = inlineMarkdown(s);
+          row.appendChild(num);
+          row.appendChild(txt);
+          wrap.appendChild(row);
+        });
+      } else {
+        const p = document.createElement('div');
+        p.className = 'txt';
+        p.innerHTML = inlineMarkdown(steps[0]);
+        wrap.appendChild(p);
+      }
     }
 
     // Source link
