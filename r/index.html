@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Capability-URL pages are link-only and must not be indexed. -->
+<meta name="robots" content="noindex, nofollow" />
+<title>Recipe — RECP</title>
+
+<link rel="icon" type="image/png" href="/ICO-iOS-Default-1024x1024@1x.png" />
+<link rel="apple-touch-icon" href="/ICO-iOS-Default-1024x1024@1x.png" />
+
+<style>
+  :root{
+    --green:#79b449;
+    --green-dark:#5d9633;
+    --ink:#16181d;
+    --muted:#5b6470;
+    --bg:#ffffff;
+    --bg-soft:#f5f7f3;
+    --border:#e5e8e2;
+    --shadow:0 18px 48px -18px rgba(20,30,12,.28);
+    --radius:18px;
+    --maxw:760px;
+    --rounded:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:var(--sans);color:var(--ink);
+    background:var(--bg-soft);line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--green-dark)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:22px}
+  h1,h2{font-family:var(--rounded);line-height:1.15;letter-spacing:-.02em;margin:0 0 .4em}
+  h1{font-size:clamp(1.9rem,5vw,2.8rem);font-weight:800}
+  h2{font-size:1.3rem;font-weight:800;margin-top:1.6em}
+  .muted{color:var(--muted)}
+
+  header.site{display:flex;align-items:center;gap:10px;max-width:var(--maxw);margin:0 auto;padding:16px 22px}
+  header.site img{width:30px;height:30px;border-radius:8px}
+  header.site b{font-family:var(--rounded);font-weight:800}
+
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .hero{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:var(--bg-soft-2)}
+  .pad{padding:24px}
+
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin:.2em 0 1em}
+  .pill{font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--bg-soft);color:var(--muted);border:1px solid var(--border)}
+  .pill.cat{background:rgba(121,180,73,.14);color:var(--green-dark);border-color:transparent}
+
+  ul.ingredients{list-style:none;padding:0;margin:0}
+  ul.ingredients li{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+  ul.ingredients li:last-child{border-bottom:0}
+  ul.ingredients li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);margin-top:.6em;flex:0 0 auto}
+
+  ol.steps{padding-left:1.2em;margin:0}
+  ol.steps li{margin:0 0 .8em;padding-left:.2em}
+
+  .source{margin-top:1.4em;font-size:.9rem}
+  .footer{max-width:var(--maxw);margin:24px auto;padding:0 22px;text-align:center}
+  .btn{display:inline-block;background:var(--green);color:#fff;font-weight:700;padding:12px 22px;border-radius:999px;text-decoration:none}
+  .btn:hover{background:var(--green-dark)}
+
+  .state{max-width:var(--maxw);margin:8vh auto;padding:0 22px;text-align:center}
+  .state .emoji{font-size:3rem}
+  .spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <img src="/logotype.png" alt="" onerror="this.style.display='none'"/>
+  <b>RECP</b>
+</header>
+
+<!-- Loading -->
+<div id="loading" class="state">
+  <div class="spinner"></div>
+  <p class="muted" style="margin-top:1em">Loading recipe…</p>
+</div>
+
+<!-- Error / not found -->
+<div id="error" class="state" hidden>
+  <div class="emoji">🍳</div>
+  <h1 id="error-title">Recipe not found</h1>
+  <p class="muted" id="error-msg">This link may have expired or the recipe is no longer shared.</p>
+  <p style="margin-top:1.4em"><a class="btn" href="/">Get RECP</a></p>
+</div>
+
+<!-- Recipe -->
+<main id="recipe" class="wrap" hidden>
+  <article class="card">
+    <img id="r-image" class="hero" alt="" hidden />
+    <div class="pad">
+      <h1 id="r-title"></h1>
+      <div class="pills" id="r-pills"></div>
+      <p id="r-desc" class="muted" hidden></p>
+
+      <h2 id="r-ing-title" hidden>Ingredients</h2>
+      <ul class="ingredients" id="r-ingredients"></ul>
+
+      <h2 id="r-steps-title" hidden>Instructions</h2>
+      <ol class="steps" id="r-steps"></ol>
+
+      <div class="source" id="r-source" hidden></div>
+    </div>
+  </article>
+  <div class="footer">
+    <p class="muted">Shared read-only with RECP — a private recipe manager for iPhone &amp; Mac.</p>
+    <a class="btn" href="/">Get the app</a>
+  </div>
+</main>
+
+<!-- CloudKit JS (Apple CDN). Fires `cloudkitloaded` on window when ready. -->
+<script src="https://cdn.apple-cloudkit.com/ck/2/cloudkit.js" async></script>
+<script>
+  // === Configuration =======================================================
+  // Public-database API token created in CloudKit Dashboard → Tokens.
+  // Restrict it to the recp-website.vercel.app referrer there. Read-only public
+  // access needs no user sign-in. Switch `environment` to 'development' to test
+  // against records created from an Xcode/Dev build (see web-sharing-plan.md §7).
+  const CONFIG = {
+    containerIdentifier: 'iCloud.pl.zyglarski.recp',
+    environment: 'production',
+    apiToken: 'REPLACE_WITH_PUBLIC_API_TOKEN'
+  };
+  const RECORD_TYPE = 'WebRecipe';
+
+  // === Helpers =============================================================
+  const $ = (id) => document.getElementById(id);
+
+  function show(which) {
+    $('loading').hidden = which !== 'loading';
+    $('error').hidden   = which !== 'error';
+    $('recipe').hidden  = which !== 'recipe';
+  }
+  function fail(title, msg) {
+    if (title) $('error-title').textContent = title;
+    if (msg)   $('error-msg').textContent = msg;
+    show('error');
+  }
+  function titleCase(raw) {
+    return String(raw || '').split('_').filter(Boolean)
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+  // Mirror the app's `normalizingEscapedNewlines` for double-escaped content.
+  function normalizeNewlines(s) {
+    return String(s || '')
+      .replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n')
+      .replace(/\\r/g, '\n').replace(/\\t/g, '\t');
+  }
+  function field(fields, key) {
+    return fields && fields[key] ? fields[key].value : undefined;
+  }
+
+  // === Render =============================================================
+  function render(fields) {
+    const title = field(fields, 'title') || 'Untitled';
+    document.title = title + ' — RECP';
+    $('r-title').textContent = title;
+
+    // Image
+    const img = field(fields, 'image');
+    if (img && img.downloadURL) {
+      const el = $('r-image');
+      el.src = img.downloadURL;
+      el.hidden = false;
+    }
+
+    // Pills: category, language, tags
+    const pills = $('r-pills');
+    const cat = field(fields, 'category');
+    if (cat) {
+      const p = document.createElement('span');
+      p.className = 'pill cat';
+      p.textContent = titleCase(cat);
+      pills.appendChild(p);
+    }
+    const lang = field(fields, 'languageCode');
+    if (lang) {
+      const p = document.createElement('span');
+      p.className = 'pill';
+      p.textContent = '🌐 ' + String(lang).toUpperCase();
+      pills.appendChild(p);
+    }
+    (field(fields, 'tags') || []).forEach(t => {
+      const p = document.createElement('span');
+      p.className = 'pill';
+      p.textContent = t;
+      pills.appendChild(p);
+    });
+
+    // Description
+    const desc = field(fields, 'desc');
+    if (desc && desc.trim()) {
+      $('r-desc').textContent = desc;
+      $('r-desc').hidden = false;
+    }
+
+    // Ingredients
+    const ingredients = field(fields, 'ingredients') || [];
+    if (ingredients.length) {
+      $('r-ing-title').hidden = false;
+      const ul = $('r-ingredients');
+      ingredients.forEach(name => {
+        const li = document.createElement('li');
+        li.textContent = name;
+        ul.appendChild(li);
+      });
+    }
+
+    // Instructions → numbered steps split on blank/new lines
+    const steps = normalizeNewlines(field(fields, 'instructions'))
+      .split(/\n+/).map(s => s.trim()).filter(Boolean);
+    if (steps.length) {
+      $('r-steps-title').hidden = false;
+      const ol = $('r-steps');
+      steps.forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = s;
+        ol.appendChild(li);
+      });
+    }
+
+    // Source link
+    const url = field(fields, 'originURL');
+    if (url) {
+      const wrap = $('r-source');
+      const a = document.createElement('a');
+      a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      let host = url;
+      try { host = new URL(url).host; } catch (_) {}
+      a.textContent = '🔗 Source: ' + host;
+      wrap.appendChild(a);
+      wrap.hidden = false;
+    }
+
+    show('recipe');
+  }
+
+  // === Boot ===============================================================
+  function recordNameFromURL() {
+    // Hash route: /r/#<recordName>
+    let h = (location.hash || '').replace(/^#/, '');
+    try { h = decodeURIComponent(h); } catch (_) {}
+    return h.trim();
+  }
+
+  window.addEventListener('cloudkitloaded', function () {
+    const recordName = recordNameFromURL();
+    if (!recordName) {
+      fail('No recipe in this link', 'The link is missing its recipe id.');
+      return;
+    }
+    if (CONFIG.apiToken.startsWith('REPLACE_')) {
+      fail('Not configured yet', 'The CloudKit API token has not been set on this page.');
+      return;
+    }
+
+    try {
+      CloudKit.configure({
+        containers: [{
+          containerIdentifier: CONFIG.containerIdentifier,
+          apiTokenAuth: { apiToken: CONFIG.apiToken, persist: false },
+          environment: CONFIG.environment
+        }]
+      });
+    } catch (e) {
+      fail('Could not start', (e && (e.reason || e.message)) || 'CloudKit init failed.');
+      return;
+    }
+
+    const db = CloudKit.getDefaultContainer().publicCloudDatabase;
+    db.fetchRecords(recordName).then(function (response) {
+      if (response.hasErrors) throw response.errors[0];
+      const record = response.records && response.records[0];
+      if (!record || record.recordType !== RECORD_TYPE) {
+        fail(); // default "not found" copy
+        return;
+      }
+      render(record.fields);
+    }).catch(function (e) {
+      const code = e && (e.ckErrorCode || e.serverErrorCode);
+      if (code === 'NOT_FOUND' || code === 'BAD_REQUEST') {
+        fail(); // not found / bad/expired link
+      } else {
+        fail('Couldn’t load this recipe', (e && (e.reason || e.message)) || 'Please try again later.');
+      }
+    });
+  });
+</script>
+</body>
+</html>
