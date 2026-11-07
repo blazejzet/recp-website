@@ -138,6 +138,15 @@
   .feature h3{margin-bottom:6px}
   .feature p{margin:0;color:var(--muted);font-size:.96rem}
 
+  /* ---------- What's new ---------- */
+  .whatsnew{background:var(--bg)}
+  .whatsnew .section-head .pill{margin-bottom:14px}
+  .whatsnew .device-window{max-width:960px;margin:0 auto 28px}
+  .changelog{list-style:none;padding:0;margin:0 auto;max-width:720px;display:grid;gap:10px}
+  .changelog li{background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:12px 16px;color:var(--muted)}
+  .changelog li strong{color:var(--ink)}
+  .feature h3 .new{display:inline-block;vertical-align:middle;margin-left:8px;font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--green-dark);background:rgba(121,180,73,.14);padding:2px 8px;border-radius:999px}
+
   /* ---------- Screens ---------- */
   .screens{background:var(--bg-soft);}
   .phones{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:840px;margin:0 auto}
@@ -181,6 +190,7 @@
     <div class="menu-links">
       <nav>
         <a href="#features">Features</a>
+        <a href="#whatsnew">What’s new</a>
         <a href="#privacy">Privacy</a>
         <a href="#terms">Terms</a>
         <a href="#contact">Contact</a>
@@ -209,7 +219,7 @@
       </div>
       <div>
         <div class="device-window">
-          <img src="scr/dskt/Screenshot%202026-06-10%20at%2007.37.54.png" alt="RECP on Mac showing a recipe library and a recipe detail view" loading="lazy" />
+          <img src="scr/v13/mac-main.png" alt="RECP on Mac showing a recipe library and a recipe detail view" loading="lazy" />
         </div>
       </div>
     </div>
@@ -239,6 +249,16 @@
         <p>Built for people who actually cook. Fast to capture, lovely to browse, effortless to share.</p>
       </div>
       <div class="features">
+        <div class="feature">
+          <div class="ic">💻</div>
+          <h3>Edit in a browser <span class="new">New in 1.3</span></h3>
+          <p>Start a session in RECP, type the short code in any browser, and add or edit recipes from your computer. Every change lands on your device instantly and syncs through iCloud.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">⭐️</div>
+          <h3>Featured recipes <span class="new">New in 1.3</span></h3>
+          <p>Highlight the ones you keep coming back to — they stay at the top of the list, on every device.</p>
+        </div>
         <div class="feature">
           <div class="ic">📚</div>
           <h3>Libraries &amp; tags</h3>
@@ -274,6 +294,26 @@
   </section>
 
   <!-- SCREENS -->
+  <!-- WHAT'S NEW -->
+  <section class="whatsnew" id="whatsnew">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="pill"><span class="dot"></span> Version 1.3</span>
+        <h2>Edit on a big screen</h2>
+        <p>Open a session in RECP, type the code in any browser, and your whole library is there to edit — with preview, share links and PDF export. Nothing is stored on a server: the page is served by the app on your device, and the relay only passes requests through while the session is open.</p>
+      </div>
+      <div class="device-window">
+        <img src="scr/v13/browser-editor.png" alt="The RECP browser editor showing a recipe library in Safari" loading="lazy" />
+      </div>
+      <ul class="changelog">
+        <li><strong>Featured recipes</strong> — highlight favourites and keep them on top of the list.</li>
+        <li><strong>New list layout</strong> — photo banners, category colours and a category bar beside search.</li>
+        <li><strong>AI photos on request</strong> — generation is now opt-in; nothing is created unless you ask.</li>
+        <li><strong>Remove a photo</strong> right from the editor, plus fixes and polish throughout.</li>
+      </ul>
+    </div>
+  </section>
+
   <section class="screens" id="screens">
     <div class="wrap">
       <div class="section-head">
@@ -282,16 +322,16 @@
       </div>
       <div class="phones">
         <figure class="phone-fig" style="margin:0">
-          <div class="phone"><img src="scr/mob/IMG_1451.PNG" alt="RECP recipe grid on iPhone" loading="lazy" /></div>
+          <div class="phone"><img src="scr/v13/iphone-list.png" alt="RECP recipe list on iPhone with featured recipes" loading="lazy" /></div>
           <figcaption class="phone-cap">Browse your library</figcaption>
         </figure>
         <figure class="phone-fig" style="margin:0">
-          <div class="phone"><img src="scr/mob/IMG_1452.PNG" alt="A recipe detail view on iPhone" loading="lazy" /></div>
+          <div class="phone"><img src="scr/v13/iphone-detail.png" alt="A recipe detail view on iPhone" loading="lazy" /></div>
           <figcaption class="phone-cap">Cook from clear steps</figcaption>
         </figure>
         <figure class="phone-fig" style="margin:0">
-          <div class="phone"><img src="scr/mob/IMG_1453.PNG" alt="Sharing a recipe library on iPhone" loading="lazy" /></div>
-          <figcaption class="phone-cap">Share with the people you cook with</figcaption>
+          <div class="phone"><img src="scr/v13/iphone-websession.png" alt="The Edit in Browser session screen on iPhone with a code and QR" loading="lazy" /></div>
+          <figcaption class="phone-cap">Edit from your computer</figcaption>
         </figure>
       </div>
     </div>
@@ -305,9 +345,9 @@
         <!-- PRIVACY -->
         <article class="doc" id="privacy">
           <h2>Privacy Policy</h2>
-          <p class="updated">Last updated: 10 June 2026</p>
+          <p class="updated">Last updated: 7 November 2026</p>
 
-          <p><strong>The short version:</strong> RECP does not collect, sell, rent, or share your personal data. There are no analytics, no advertising, no third-party trackers, and no servers operated by us.</p>
+          <p><strong>The short version:</strong> RECP does not collect, sell, rent, or share your personal data. There are no analytics, no advertising, and no third-party trackers. The only server we operate is a pass-through relay for the optional browser editor, and it stores none of your recipes.</p>
 
           <h3>Where your data lives</h3>
           <p>Your recipes, libraries, tags and images are stored on your device and in your own <strong>private iCloud</strong> account using Apple CloudKit. Apple syncs this data between devices signed in to your Apple Account. The developer has no access to your private library.</p>
@@ -321,13 +361,16 @@
           <h3>AI features (optional)</h3>
           <p>RECP has no built-in AI service. If you enter your own OpenAI-compatible API URL and key in Settings, the recipe text you choose to parse (and prompts used to generate images) are sent to that endpoint you specify. That processing is governed by the terms and privacy policy of the provider you chose; RECP does not operate it and does not receive a copy of your data. Leave these settings blank to keep the feature off.</p>
 
+          <h3>Editing in a browser (optional)</h3>
+          <p>When you start an <em>Edit in Browser</em> session, the app on your device serves its editor to the browser through a relay we operate on Cloudflare (<code>relay.recp.bid</code>). The relay forwards requests between the browser and your device while the session is open; it does not store your recipes, and it keeps only a short-lived session cookie. The session code is single-use and expires when you end the session or after a few hours. Traffic between your browser and the relay, and between the relay and your device, is encrypted with TLS.</p>
+
           <h3>Reminders (optional)</h3>
           <p>With your permission, RECP can add a recipe’s ingredients to Apple Reminders on your device using Apple’s EventKit. This happens locally; no data is sent to us through this feature. You can revoke access in your system Privacy settings.</p>
 
           <h3>Permissions we use</h3>
           <ul>
             <li><strong>iCloud</strong> — to store and sync your recipes and to enable sharing.</li>
-            <li><strong>Network</strong> — to reach iCloud, the public catalogue, and any AI endpoint you configure.</li>
+            <li><strong>Network</strong> — to reach iCloud, the public catalogue, the browser-editor relay during a session, and any AI endpoint you configure.</li>
             <li><strong>Reminders</strong> — optional, only when you add ingredients to a list.</li>
           </ul>
 
