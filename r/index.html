@@ -129,7 +129,13 @@
   const CONFIG = {
     containerIdentifier: 'iCloud.pl.zyglarski.recp',
     environment: 'production',
-    apiToken: '4c9668c26cdabc0fa44f347c65dd867b92201ed48d5bbbf09a9f17783158a328'
+    apiToken: '4c9668c26cdabc0fa44f347c65dd867b92201ed48d5bbbf09a9f17783158a328',
+    // Links made by Xcode (Debug) builds point at the *Development* public DB
+    // and arrive as /r/?env=dev#<id>. They need a token created for the
+    // Development environment (CloudKit Dashboard → Tokens, environment
+    // switched to Development, same origin restriction). API tokens are
+    // environment-specific — the production one is rejected there.
+    devApiToken: 'REPLACE_WITH_DEV_API_TOKEN'
   };
   const RECORD_TYPE = 'WebRecipe';
 
@@ -316,8 +322,14 @@
       fail('No recipe in this link', 'The link is missing its recipe id.');
       return;
     }
-    if (CONFIG.apiToken.startsWith('REPLACE_')) {
-      fail('Not configured yet', 'The CloudKit API token has not been set on this page.');
+    // ?env=dev selects the Development environment (links from Xcode builds).
+    const isDev = new URLSearchParams(location.search).get('env') === 'dev';
+    const environment = isDev ? 'development' : CONFIG.environment;
+    const apiToken = isDev ? CONFIG.devApiToken : CONFIG.apiToken;
+    if (apiToken.startsWith('REPLACE_')) {
+      fail('Not configured yet', isDev
+        ? 'This link comes from a development build of RECP. The page has no Development API token yet — add it to CONFIG.devApiToken, or share from a TestFlight / App Store build.'
+        : 'The CloudKit API token has not been set on this page.');
       return;
     }
 
@@ -325,8 +337,8 @@
       CloudKit.configure({
         containers: [{
           containerIdentifier: CONFIG.containerIdentifier,
-          apiTokenAuth: { apiToken: CONFIG.apiToken, persist: false },
-          environment: CONFIG.environment
+          apiTokenAuth: { apiToken: apiToken, persist: false },
+          environment: environment
         }]
       });
     } catch (e) {
