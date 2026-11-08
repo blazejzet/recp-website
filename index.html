@@ -147,6 +147,7 @@
   .cooking{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;margin-top:48px}
   @media(max-width:880px){.cooking{grid-template-columns:1fr}}
   .cooking p{color:var(--muted)}
+  .cooking-photo img{width:100%;height:auto;display:block;filter:drop-shadow(0 24px 40px rgba(20,30,12,.28))}
 
   /* ---------- What's new ---------- */
   .whatsnew{background:var(--bg)}
@@ -331,8 +332,8 @@
         <li><strong>Remove a photo</strong> right from the editor, plus fixes and polish throughout.</li>
       </ul>
       <div class="cooking">
-        <div class="device-window">
-          <img src="scr/v13/duo-tent.jpg" alt="iPhone Duo folded into a tent on a kitchen shelf, showing cooking mode: ingredients on the left, one step on the right" loading="lazy" />
+        <div class="cooking-photo">
+          <img src="scr/v13/duo-tent.png" alt="iPhone Duo folded into a tent on a kitchen shelf, showing cooking mode: ingredients on the left, one step on the right" loading="lazy" />
         </div>
         <div>
           <h3>Hands busy? Turn the phone.</h3>
