@@ -138,6 +138,16 @@
   .feature h3{margin-bottom:6px}
   .feature p{margin:0;color:var(--muted);font-size:.96rem}
 
+  /* ---------- Relay link ---------- */
+  .relay-link{display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:12px 18px 12px 14px;border-radius:999px;
+    background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);font-weight:700;color:var(--ink);text-decoration:none}
+  .relay-link:hover{border-color:var(--green);text-decoration:none;transform:translateY(-1px)}
+  .relay-link .ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(121,180,73,.14);font-size:1.1rem}
+  .relay-link small{display:block;font-weight:500;color:var(--muted);font-size:.8rem}
+  .cooking{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;margin-top:48px}
+  @media(max-width:880px){.cooking{grid-template-columns:1fr}}
+  .cooking p{color:var(--muted)}
+
   /* ---------- What's new ---------- */
   .whatsnew{background:var(--bg)}
   .whatsnew .section-head .pill{margin-bottom:14px}
@@ -252,7 +262,12 @@
         <div class="feature">
           <div class="ic">💻</div>
           <h3>Edit in a browser <span class="new">New in 1.3</span></h3>
-          <p>Start a session in RECP, type the short code in any browser, and add or edit recipes from your computer. Every change lands on your device instantly and syncs through iCloud.</p>
+          <p>Start a session in RECP, type the short code at <a href="https://relay.recp.bid/">relay.recp.bid</a> in any browser, and add or edit recipes from your computer. Every change lands on your device instantly and syncs through iCloud.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">🍳</div>
+          <h3>Cooking mode <span class="new">New in 1.3</span></h3>
+          <p>Turn the phone sideways — or fold an iPhone Duo into a tent — and the recipe becomes ingredients on the left and one step at a time on the right, over a softly blurred photo.</p>
         </div>
         <div class="feature">
           <div class="ic">⭐️</div>
@@ -287,7 +302,7 @@
         <div class="feature">
           <div class="ic">🌐</div>
           <h3>Languages &amp; origins</h3>
-          <p>Tag a recipe’s origin, set its language, and have new AI-generated recipes written in the language you prefer.</p>
+          <p>Tag a recipe’s origin, set its language, and have new AI-generated recipes written in the language you prefer. The app itself speaks English and Polish.</p>
         </div>
       </div>
     </div>
@@ -301,6 +316,7 @@
         <span class="pill"><span class="dot"></span> Version 1.3</span>
         <h2>Edit on a big screen</h2>
         <p>Open a session in RECP, type the code in any browser, and your whole library is there to edit — with preview, share links and PDF export. Nothing is stored on a server: the page is served by the app on your device, and the relay only passes requests through while the session is open.</p>
+        <a class="relay-link" href="https://relay.recp.bid/"><span class="ic">🔗</span><span>relay.recp.bid<small>Enter your session code here</small></span></a>
       </div>
       <div class="device-window">
         <img src="scr/v13/browser-editor.png" alt="The RECP browser editor showing a recipe library in Safari" loading="lazy" />
@@ -309,8 +325,21 @@
         <li><strong>Featured recipes</strong> — highlight favourites and keep them on top of the list.</li>
         <li><strong>New list layout</strong> — photo banners, category colours and a category bar beside search.</li>
         <li><strong>AI photos on request</strong> — generation is now opt-in; nothing is created unless you ask.</li>
+        <li><strong>Cooking mode</strong> — turn the phone sideways for ingredients beside a single, swipeable step.</li>
+        <li><strong>iPhone Duo</strong> — the list and the recipe side by side when the phone is unfolded.</li>
+        <li><strong>Polish interface</strong> — the whole app, not just the categories.</li>
         <li><strong>Remove a photo</strong> right from the editor, plus fixes and polish throughout.</li>
       </ul>
+      <div class="cooking">
+        <div class="device-window">
+          <img src="scr/v13/iphone-cooking.png" alt="Cooking mode on iPhone: ingredients on the left, one step on the right over a blurred photo" loading="lazy" />
+        </div>
+        <div>
+          <h3>Hands busy? Turn the phone.</h3>
+          <p>In cooking mode the title and ingredients sit on the left, and the right side shows one step at a time — swipe, or tap the arrows, and the dots tell you where you are. The photo of the dish fades into the background so the text stays readable from across the counter.</p>
+          <p>On an iPhone Duo the same view works on the outer display when the phone is folded into a tent.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -438,6 +467,7 @@
       <a href="#features">Features</a>
       <a href="#privacy">Privacy Policy</a>
       <a href="#terms">Terms of Use</a>
+      <a href="https://relay.recp.bid/">Browser editor</a>
       <a href="mailto:courtly.radii-6h@icloud.com">Contact</a>
     </div>
     <small>© 2026 RECP. All rights reserved.</small>
